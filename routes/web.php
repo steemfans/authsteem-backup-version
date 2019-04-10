@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'HomeController@index')->name('home_index');
+Route::get('/auth', 'HomeController@auth')->name('home_auth');
+
+Route::prefix('/dashboard')->group(function(){
+    Route::get('/index', 'DashboardController@index')->name('dashboard_index');
+    Route::get('/app/create', 'DashboardController@create')->name('dashboard_app_create');
+    Route::get('/index', 'DashboardController@index')->name('dashboard_index');
+    Route::get('/index', 'DashboardController@index')->name('dashboard_index');
 });
