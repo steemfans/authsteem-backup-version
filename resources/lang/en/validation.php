@@ -145,7 +145,7 @@ return [
     */
 
     'attributes' => [
-        'client_id' => 'client_id',
+        'app_id' => 'app_id',
         'redirect_uri' => 'redirect_uri',
         'scope' => 'scope',
     ],
