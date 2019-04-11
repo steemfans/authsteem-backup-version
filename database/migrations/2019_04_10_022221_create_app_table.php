@@ -15,6 +15,7 @@ class CreateAppTable extends Migration
     {
         Schema::create('app', function (Blueprint $table) {
             $table->string('app_id', 16);
+            $table->string('user_id', 16)->comment('creater');
             $table->string('app_name', 100)->nullable();
             $table->string('app_icon', 200)->nullable();
             $table->text('app_description')->nullable();
