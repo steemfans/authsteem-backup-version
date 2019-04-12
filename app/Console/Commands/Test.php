@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Crypt;
+use App\Lib\Steem\Steem;
 
 class Test extends Command
 {
@@ -38,9 +39,5 @@ class Test extends Command
      */
     public function handle()
     {
-        $str = '5JSqGsY4LCwh5syEh4u4Hmjb2LzmwNzogCf9BbxAhQnNHzc2wHu';
-        $abc = encrypt($str);
-        var_dump($abc);
-        var_dump(decrypt($abc));
     }
 }
