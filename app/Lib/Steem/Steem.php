@@ -2,6 +2,7 @@
 namespace App\Lib\Steem;
 use Log;
 use GuzzleHttp\Client;
+use BitWasp\Bitcoin\Key\Factory\PrivateKeyFactory;
 
 class Steem {
     protected $baseUrl;
@@ -25,6 +26,20 @@ class Steem {
             Log::warning('response_status_code_not_200', [$response]);
             return false;
         }
+    }
+
+    public function generatePrivateKeysFromMainPassword($username, $mainPassword) {
+        $roles = ['owner', 'active', 'posting', 'memo'];
+        $result = [];
+        $factory = new PrivateKeyFactory();
+        foreach ($roles as $role) {
+            $seed = $username.$role.$mainPassword;
+            $brainKey = implode(" ", explode("/[\t\n\v\f\r ]+/", trim($seed)));
+            $hashSha256 = hash('sha256', $brainKey);
+            $privKey = $factory->fromHexUncompressed($hashSha256);
+            $result[$role] = $privKey->toWif();
+        }
+        return $result;
     }
 
     protected function dataFactory($method = 'condenser_api.get_dynamic_global_properties', $params = [], $id = 1) {
