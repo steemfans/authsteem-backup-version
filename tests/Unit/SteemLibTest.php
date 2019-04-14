@@ -32,4 +32,11 @@ class SteemLibTest extends TestCase
         $this->assertSame('5JkjMbDGzxyob6YYW5Bf52Q7kqpB9B4GLLHtT7akjsUKBKhjJhy', $re['posting']);
         $this->assertSame('5JSm7ukKeRykouoaVkA2SAvceyQphC3Z1ReWz1LKL17szKqABfv', $re['memo']);
     }
+
+    public function testGenerateRandomPrivateKey()
+    {
+        $steem = new Steem();
+        $p = $steem->generateRandomPrivateKey('1234567890');
+        $this->assertSame('5KL8Xvb5sGL1LZuFQqJGViJzshhboZksehS5DwtJUqVeTMAWsDp', $p);
+    }
 }

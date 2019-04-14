@@ -3,6 +3,7 @@ namespace App\Lib\Steem;
 use Log;
 use GuzzleHttp\Client;
 use BitWasp\Bitcoin\Key\Factory\PrivateKeyFactory;
+use Str;
 
 class Steem {
     protected $baseUrl;
@@ -40,6 +41,16 @@ class Steem {
             $result[$role] = $privKey->toWif();
         }
         return $result;
+    }
+
+    public function generateRandomPrivateKey($seed = null) {
+        if ($seed == null) {
+            $seed = Str::random(64).time().Str::random(40);
+        }
+        $hashSha256 = hash('sha256', $seed);
+        $factory = new PrivateKeyFactory();
+        $privKey = $factory->fromHexUncompressed($hashSha256);
+        return $privKey->toWif();
     }
 
     protected function dataFactory($method = 'condenser_api.get_dynamic_global_properties', $params = [], $id = 1) {
