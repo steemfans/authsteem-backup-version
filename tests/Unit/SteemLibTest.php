@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Lib\Steem\Steem;
+use BitWasp\Bitcoin\Key\Factory\PrivateKeyFactory;
 
 class SteemLibTest extends TestCase
 {
@@ -36,7 +37,18 @@ class SteemLibTest extends TestCase
     public function testGenerateRandomPrivateKey()
     {
         $steem = new Steem();
-        $p = $steem->generateRandomPrivateKey('1234567890');
-        $this->assertSame('5KL8Xvb5sGL1LZuFQqJGViJzshhboZksehS5DwtJUqVeTMAWsDp', $p);
+        $p = $steem->generateRandomPrivateKey();
+        $factory = new PrivateKeyFactory();
+        $privKey = $factory->fromWif($p);
+        $this->assertTrue($privKey->isPrivate());
+    }
+
+    public function test()
+    {
+        $wif = '5JPeTYZ2dSVYeYSWYJhr1HWbboXEDCuTe7tWcgWqTrNqBjMM5iJ';
+        $pubKey = 'STM6gZXURyXu7g2jEY1RTz4LgxkcdVbm5NLvasbs9pytwpbmvLW3g';
+        $steem = new Steem();
+        $pubKeyResult = $steem->getPubKeyFromPrivKeyWif($wif);
+        $this->assertSame($pubKey, $pubKeyResult);
     }
 }

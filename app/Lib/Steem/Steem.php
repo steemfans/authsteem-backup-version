@@ -3,8 +3,18 @@ namespace App\Lib\Steem;
 use Log;
 use GuzzleHttp\Client;
 use BitWasp\Bitcoin\Key\Factory\PrivateKeyFactory;
+use BitWasp\Bitcoin\Key\Factory\PublicKeyFactory;
+use BitWasp\Bitcoin\Crypto\Random\Random;
 use Str;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Buffertools;
+use BitWasp\Bitcoin\Crypto\Hash;
+use BitWasp\Bitcoin\Base58;
+use BitWasp\Bitcoin\Bitcoin;
+use BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Key\PublicKey;
+use BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Serializer\Key\PublicKeySerializer;
 
+use Mdanter\Ecc\EccFactory;
 class Steem {
     protected $baseUrl;
     protected $timeout;
@@ -43,14 +53,44 @@ class Steem {
         return $result;
     }
 
-    public function generateRandomPrivateKey($seed = null) {
-        if ($seed == null) {
-            $seed = Str::random(64).time().Str::random(40);
-        }
-        $hashSha256 = hash('sha256', $seed);
+    public function generateRandomPrivateKey() {
         $factory = new PrivateKeyFactory();
-        $privKey = $factory->fromHexUncompressed($hashSha256);
+        $privKey = $factory->generateUncompressed(new Random());
         return $privKey->toWif();
+    }
+
+    public function getPubKeyFromPrivKeyWif($wif) {
+        $factory = new PrivateKeyFactory();
+        $privKey = $factory->fromWif($wif);
+        $publicKey = $privKey->getPublicKey();
+        $pubKeyBuff = $this->doSerialize($publicKey);
+        $checkSum = Hash::ripemd160($pubKeyBuff);
+        $addy = Buffertools::concat($pubKeyBuff, $checkSum->slice(0, 4));
+        $pubdata = Base58::encode($addy);
+        $pubKeyStr = 'STM'.$pubdata;
+        return $pubKeyStr;
+    }
+
+    protected function doSerialize(PublicKey $pubKey) {
+        $point = $pubKey->getPoint();
+        $prefix = $this->getPubKeyPrefix($pubKey);
+        $xBuff = Buffer::hex(gmp_strval($point->getX(), 16), 32);
+        $yBuff = Buffer::hex(gmp_strval($point->getY(), 16), 32);
+        $data = Buffertools::concat($prefix , $xBuff);
+        // steem的compress与btc相反
+        if ($pubKey->isCompressed()) {
+           $data = Buffertools::concat($data, $yBuff);
+        }
+        return $data;
+    }
+
+    protected function getPubKeyPrefix($pubKey) {
+        // steem的compress与btc相反
+        return !$pubKey->isCompressed()
+            ? Bitcoin::getEcAdapter()->getMath()->isEven($pubKey->getPoint()->getY())
+                ? Buffer::hex('02', 1)
+                : Buffer::hex('03', 1)
+            : Buffer::hex('04', 1);
     }
 
     protected function dataFactory($method = 'condenser_api.get_dynamic_global_properties', $params = [], $id = 1) {
