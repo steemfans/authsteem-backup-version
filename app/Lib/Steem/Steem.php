@@ -28,13 +28,30 @@ class Steem {
         $data = $this->dataFactory('condenser_api.get_accounts', [[$accountName]]);
         $response = $this->sendData($data);
         if ($response === false) {
+            Log::warning('getAccountFailed');
             return false;
         }
         if ($response->getStatusCode() === 200) {
             $result = json_decode($response->getBody()->getContents(), true);
             return $result['result'];
         } else {
-            Log::warning('response_status_code_not_200', [$response]);
+            Log::warning('getAccount_response_status_code_not_200', [$response]);
+            return false;
+        }
+    }
+
+    public function getDynamicGlobalProperties() {
+        $data = $this->dataFactory('condenser_api.get_dynamic_global_properties', []);
+        $response = $this->sendData($data);
+        if ($response === false) {
+            Log::warning('getDynamicGlobalPropertiesFailed');
+            return false;
+        }
+        if ($response->getStatusCode() === 200) {
+            $result = json_decode($response->getBody()->getContents(), true);
+            return $result['result'];
+        } else {
+            Log::warning('getDynamicGlobalProperties_response_status_code_not_200', [$response]);
             return false;
         }
     }
@@ -59,9 +76,14 @@ class Steem {
         return $privKey->toWif();
     }
 
-    public function getPubKeyFromPrivKeyWif($wif) {
+    public function getPrivateKeyFromWif($wif) {
         $factory = new PrivateKeyFactory();
         $privKey = $factory->fromWif($wif);
+        return $privKey;
+    }
+
+    public function getPubKeyFromPrivKeyWif($wif) {
+        $privKey = $this->getPrivateKeyFromWif($wif);
         $publicKey = $privKey->getPublicKey();
         $pubKeyBuff = $this->doSerialize($publicKey);
         $checkSum = Hash::ripemd160($pubKeyBuff);

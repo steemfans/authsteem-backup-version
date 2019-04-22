@@ -22,6 +22,14 @@ class SteemLibTest extends TestCase
         $this->assertSame('authsteem', $user[0]['name']);
     }
 
+    public function testGetDynamicGlobalProperties()
+    {
+        $steem = new Steem();
+        $dynamicGlobalProperties = $steem->getDynamicGlobalProperties();
+        $this->assertTrue(isset($dynamicGlobalProperties['last_irreversible_block_num']));
+        $this->assertTrue(isset($dynamicGlobalProperties['time']));
+    }
+
     public function testGeneratePrivateKeysFromMainPassword()
     {
         $steem = new Steem();
