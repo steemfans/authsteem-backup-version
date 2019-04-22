@@ -46,6 +46,18 @@ class SteemLibTest extends TestCase
         $this->assertSame('1502905444', $buff1R->getInt());
     }
 
+    public function testPrepareTransaction() {
+        $steem = new Steem();
+        $tx = [
+            'extensions' => [],
+            'operations' => [],
+        ];
+        $preparedTx = $steem->prepareTransaction($tx);
+        $this->assertTrue(isset($preparedTx['ref_block_num']));
+        $this->assertTrue(isset($preparedTx['ref_block_prefix']));
+        $this->assertTrue(isset($preparedTx['expiration']));
+    }
+
     public function testGeneratePrivateKeysFromMainPassword()
     {
         $steem = new Steem();

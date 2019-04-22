@@ -13,8 +13,8 @@ use BitWasp\Bitcoin\Base58;
 use BitWasp\Bitcoin\Bitcoin;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Key\PublicKey;
 use BitWasp\Bitcoin\Crypto\EcAdapter\Impl\PhpEcc\Serializer\Key\PublicKeySerializer;
-
 use Mdanter\Ecc\EccFactory;
+
 class Steem {
     protected $baseUrl;
     protected $timeout;
@@ -157,5 +157,26 @@ class Steem {
 
     public function readUInt32LE(Buffer $buffer) {
         return $buffer->slice(4, 4)->flip();
+    }
+
+    /**
+     * $tx = [extensions: [], operations:[]]
+     */
+    public function prepareTransaction($tx) {
+        $properties = $this->getDynamicGlobalProperties();
+        if (!$properties) {
+            return false;
+        }
+        $tx['ref_block_num'] = $properties['last_irreversible_block_num'] - 1 & 0xFFFF;
+
+        $block = $this->getBlock($properties['last_irreversible_block_num']);
+        if (!$block) {
+            return false;
+        }
+        $headBlockId = $block['previous'];
+        $tx['ref_block_prefix'] = $this->readUInt32LE(Buffer::hex($headBlockId))->getInt();
+
+        $tx['expiration'] = date('Y-m-d\TH:i:s', strtotime($properties['time']) + 600);
+        return $tx;
     }
 }
