@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Lib\Steem\Steem;
 use BitWasp\Bitcoin\Key\Factory\PrivateKeyFactory;
+use BitWasp\Buffertools\Buffer;
 
 class SteemLibTest extends TestCase
 {
@@ -35,6 +36,14 @@ class SteemLibTest extends TestCase
         $steem = new Steem();
         $block = $steem->getBlock(1);
         $this->assertSame('0000000109833ce528d5bbfb3f6225b39ee10086', $block['block_id']);
+    }
+
+    public function testReadUInt32LE()
+    {
+        $steem = new Steem();
+        $buff1 = '01ec415764849459d51858d7e443c000eb15bcc5';
+        $buff1R = $steem->readUInt32LE(Buffer::hex($buff1));
+        $this->assertSame('1502905444', $buff1R->getInt());
     }
 
     public function testGeneratePrivateKeysFromMainPassword()

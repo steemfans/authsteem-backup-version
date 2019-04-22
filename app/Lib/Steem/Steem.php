@@ -154,4 +154,8 @@ class Steem {
             return false;
         }
     }
+
+    public function readUInt32LE(Buffer $buffer) {
+        return $buffer->slice(4, 4)->flip();
+    }
 }
