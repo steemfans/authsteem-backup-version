@@ -56,6 +56,22 @@ class Steem {
         }
     }
 
+    public function getBlock($blockNum) {
+        $data = $this->dataFactory('condenser_api.get_block', [$blockNum]);
+        $response = $this->sendData($data);
+        if ($response === false) {
+            Log::warning('getBlockFailed');
+            return false;
+        }
+        if ($response->getStatusCode() === 200) {
+            $result = json_decode($response->getBody()->getContents(), true);
+            return $result['result'];
+        } else {
+            Log::warning('getBlockFailed_response_status_code_not_200', [$response]);
+            return false;
+        }
+    }
+
     public function generatePrivateKeysFromMainPassword($username, $mainPassword) {
         $roles = ['owner', 'active', 'posting', 'memo'];
         $result = [];

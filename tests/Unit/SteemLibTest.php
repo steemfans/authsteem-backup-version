@@ -30,6 +30,13 @@ class SteemLibTest extends TestCase
         $this->assertTrue(isset($dynamicGlobalProperties['time']));
     }
 
+    public function testGetBlock()
+    {
+        $steem = new Steem();
+        $block = $steem->getBlock(1);
+        $this->assertSame('0000000109833ce528d5bbfb3f6225b39ee10086', $block['block_id']);
+    }
+
     public function testGeneratePrivateKeysFromMainPassword()
     {
         $steem = new Steem();
