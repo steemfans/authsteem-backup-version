@@ -167,16 +167,19 @@ class Steem {
         if (!$properties) {
             return false;
         }
-        $tx['ref_block_num'] = $properties['last_irreversible_block_num'] - 1 & 0xFFFF;
+        $tmpTx = [];
+        $tmpTx['ref_block_num'] = $properties['last_irreversible_block_num'] - 1 & 0xFFFF;
 
         $block = $this->getBlock($properties['last_irreversible_block_num']);
         if (!$block) {
             return false;
         }
         $headBlockId = $block['previous'];
-        $tx['ref_block_prefix'] = $this->readUInt32LE(Buffer::hex($headBlockId))->getInt();
+        $tmpTx['ref_block_prefix'] = $this->readUInt32LE(Buffer::hex($headBlockId))->getInt();
 
-        $tx['expiration'] = date('Y-m-d\TH:i:s', strtotime($properties['time']) + 600);
-        return $tx;
+        $tmpTx['expiration'] = date('Y-m-d\TH:i:s', strtotime($properties['time']) + 600);
+        $tmpTx['extensions'] = $tx['extensions'];
+        $tmpTx['operations'] = $tx['operations'];
+        return $tmpTx;
     }
 }
