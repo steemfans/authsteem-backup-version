@@ -15,10 +15,9 @@ class CreateAuthTable extends Migration
     {
         Schema::create('auth', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('user_id', 16)->index();
-            $table->string('app_id', 16)->index();
-            $table->string('scopes');
-            $table->string('token', 64);
+            $table->string('username', 30)->index();
+            $table->bigInteger('app_id')->index();
+            $table->string('token', 32)->index();
             $table->timestamp('expire_at')->nullable();
             $table->timestamps();
         });

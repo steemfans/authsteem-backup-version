@@ -14,21 +14,18 @@ class CreateAppTable extends Migration
     public function up()
     {
         Schema::create('app', function (Blueprint $table) {
-            $table->string('app_id', 16);
-            $table->string('user_id', 16)->comment('creater');
+            $table->bigIncrements('id');
             $table->string('app_name', 100)->nullable();
             $table->string('app_icon', 200)->nullable();
-            $table->text('app_description')->nullable();
-            $table->string('website', 100)->nullable();
-            $table->string('callback_uri', 200)->nullable();
-            $table->string('test_callback_uri', 200)->nullable();
-            $table->string('main_key');
-            $table->string('posting_key');
-            $table->string('active_key');
-            $table->string('memo_key');
+            $table->text('app_desc')->nullable();
+            $table->string('app_site', 100)->nullable();
+            $table->string('cb_uri', 200)->nullable();
+            $table->string('test_cb_uri', 200)->nullable();
+            $table->string('username', 50)->index()->nullable();
+            $table->string('posting_public', 53)->nullable();
+            $table->string('active_public', 53)->nullable();
             $table->smallInteger('status')->default(1);
             $table->timestamps();
-            $table->primary('app_id');
         });
     }
 
