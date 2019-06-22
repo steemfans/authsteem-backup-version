@@ -24,6 +24,7 @@ class CreateAppTable extends Migration
             $table->string('username', 50)->index()->nullable();
             $table->string('posting_public', 53)->nullable();
             $table->string('active_public', 53)->nullable();
+            $table->string('secret', 32);
             $table->smallInteger('status')->default(1);
             $table->timestamps();
         });
