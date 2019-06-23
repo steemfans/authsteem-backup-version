@@ -113,7 +113,7 @@ class AuthController extends Controller
                 } else {
                     // login success
                     // update user auth token
-                    $token = md5(uniqid());
+                    $token = md5(env('APP_KEY').uniqid());
                     $user->token = $token;
                     $user->save();
                     // redirect to callback
@@ -166,10 +166,15 @@ class AuthController extends Controller
                 } else {
                     // auth success
                     // create user auth
-                    $user = new AuthTable();
+                    $user = AuthTable::where('username', $data['username'])
+                        ->where('app_id', $data['app_id'])
+                        ->first();
+                    if (!$user) {
+                        $user = new AuthTable();
+                    }
                     $user->username = $data['username'];
                     $user->app_id = $data['app_id'];
-                    $token = md5(uniqid());
+                    $token = md5(uniqid().env('APP_KEY'));
                     $user->token = $token;
                     $user->save();
                     // redirect to callback
