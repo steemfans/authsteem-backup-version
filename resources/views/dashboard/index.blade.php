@@ -6,9 +6,11 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>应用信息</h1>
+            <div><a href="{{ route('home_docs') }}">文档</a> | <a href="{{ route('dashboard_logout') }}">退出</a></div>
         </div>
         <div class="col-xs-6">
-            <form method="post" action="">
+            <form method="post" action="{{ route('dashboard_index_save') }}">
+                @csrf
                 <div class="form-group">
                     <label for="app_id">应用ID</label>
                     <input type="text" class="form-control" id="app_id" value="{{ $username }}" disabled>

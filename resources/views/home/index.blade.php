@@ -11,6 +11,7 @@
             @else
             <p><a href="{{ route('auth', ['app_id' => 'authsteem', 'scope' => 'login']) }}">开始</a></p>
             @endif
+            <p><a href="{{ route('home_docs') }}">文档</a></p>
         </div>
     </div>
 @endsection

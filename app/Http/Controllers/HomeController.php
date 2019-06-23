@@ -13,10 +13,21 @@ use App\Lib\Steem\JsBridge;
 class HomeController extends Controller
 {
     public function index(Request $request) {
+        $app = session('app');
+        if ($app) {
+            return redirect()->route('dashboard_index');
+        }
         return response()->view(
             'home/index',
             [],
             200
+        );
+    }
+
+    public function docs(Request $request) {
+        return response()->view(
+            'home/docs',
+            []
         );
     }
 
