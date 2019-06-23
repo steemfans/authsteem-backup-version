@@ -59,7 +59,7 @@ class HomeController extends Controller
                     return response()->view(
                         'error',
                         ['errors' => ['app_not_register']]
-                    )
+                    );
                 }
                 session('app', $app);
                 return redirect()->route('dashboard_index');
