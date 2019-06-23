@@ -38,6 +38,7 @@ class AuthController extends Controller
         // find app
         $app = AppTable::where('username', $data['app_id'])->first();       
         if (!$app) {
+            Log::warning('app_not_exist', [$data]);
             return response()->view(
                 'error',
                 ['errors' => ['应用不存在']]
@@ -56,6 +57,7 @@ class AuthController extends Controller
 
     public function authFromPost(Request $request) {
         $data = $request->input();
+        Log::info('get_into_authFromPost', [$data]);
         $test = $data['test'] == '' ? false : true;
         // get app info
         $app = AppTable::where('username', $data['app_id'])
@@ -74,6 +76,7 @@ class AuthController extends Controller
                     ->where('app_id', $data['app_id'])
                     ->first();
                 if (!$user) {
+                    Log::warning('not_bind', [$data]);
                     // redirect to posting auth page
                     return redirect()->route(
                         'auth',
@@ -86,10 +89,11 @@ class AuthController extends Controller
                 // auth user posting key
                 $result = $jsBridge->authLogin($data['username'], $data['passwd']);
                 if ($result === false) {
+                    Log::error('login_js_bridge_error', [92]);
                     // js bridge error
                     return response()->view(
                         'error',
-                        ['errors' => 'js_bridge_error']
+                        ['errors' => 'login_js_bridge_error']
                     );
                 }
                 Log::info('login_auth', $result);
@@ -106,6 +110,7 @@ class AuthController extends Controller
                             $err = ['异常错误: '.$result['msg']];
                             break;
                     }
+                    Log::warning('login_failed', [$result]);
                     return response()->view(
                         'error',
                         ['errors' => $err]
@@ -133,6 +138,7 @@ class AuthController extends Controller
                         ],
                         'cbUri' => $cbUri,
                     ];
+                    Log::info('login_redirect', $redirectData);
                     return redirect()->route('home_redirect')->with('data', $redirectData);
                 }
                 break;
@@ -140,9 +146,10 @@ class AuthController extends Controller
                 $result = $jsBridge->addAccountAuth($data['username'], $data['passwd'], $data['app_id']);
                 if ($result === false) {
                     // js bridge error
+                    Log::error('posting_js_bridge_error', [149]);
                     return response()->view(
                         'error',
-                        ['errors' => 'js_bridge_error']
+                        ['errors' => 'posting_js_bridge_error']
                     );
                 }
                 Log::info('add_account_auth', $result);
@@ -190,9 +197,11 @@ class AuthController extends Controller
                             'token' => $token,
                             'sign' => md5($data['username'].$token.$secret),
                             'result' => json_encode($result['msg']),
+                            'scope' => $data['scope'],
                         ],
                         'cbUri' => $cbUri,
                     ];
+                    Log::info('posting_redirect', $redirectData);
                     return redirect()->route('home_redirect')->with('data', $redirectData);
                 }
                 break;
@@ -253,9 +262,11 @@ class AuthController extends Controller
                             'token' => md5(time().uniqid()),
                             'sign' => md5($data['username'].$token.$secret),
                             'result' => json_encode($result['msg']),
+                            'scope' => $data['scope'],
                         ],
                         'cbUri' => $cbUri,
                     ];
+                    Log::info('remove_posting_redirect', $redirectData);
                     return redirect()->route('home_redirect')->with('data', $redirectData);
                     // return response()->view(
                     //     'success',

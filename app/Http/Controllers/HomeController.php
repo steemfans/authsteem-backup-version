@@ -22,6 +22,7 @@ class HomeController extends Controller
 
     public function redirect(Request $request) {
         $data = session('data');
+        Log::info('redirect', [$data]);
         if (!$data) {
             return redirect()->route('home_index');
         }
@@ -38,6 +39,7 @@ class HomeController extends Controller
         $sign = isset($data['sign']) ? $data['sign'] : null;
         $scope = isset($data['scope']) ? $data['scope'] : null;
         if (!$username || !$token || !$sign || !$scope) {
+            Log::warning('callback_params_error', [$data]);
             return response()->view(
                 'error',
                 ['errors' => ['params_error']]
@@ -47,6 +49,7 @@ class HomeController extends Controller
         $secret = env('AUTHSTEEM_APP_TOKEN');
         $tmpSign = md5($username.$token.$secret);
         if ($tmpSign != $sign) {
+            Log::warning('callback_auth_sign_failed', [$data]);
             return response()->view(
                 'error',
                 ['errors' => ['invalid_input']]
