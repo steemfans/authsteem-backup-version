@@ -10,10 +10,10 @@
             <p>暂无应用</p>
         </div>
     </div>
-    <div class="row">
+    <!--<div class="row">
         <div class="col-xs-12">
             <h1>你授权的应用</h1>
             <p>暂无应用</p>
         </div>
-    </div>
+    </div>-->
 @endsection

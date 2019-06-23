@@ -25,17 +25,11 @@ class ScopeChecker implements Rule
      */
     public function passes($attribute, $value)
     {
-        $defaultScopes = ['posting', 'active', 'owner', 'login'];
-        $tmpScope = explode(',', $value);
-        foreach($tmpScope as $k => $v) {
-            if (!in_array($v, $defaultScopes)) {
-                unset($tmpScope[$k]);
-            }
+        $defaultScopes = ['posting', 'remove_posting', 'login'];
+        if (in_array($value, $defaultScopes)) {
+            return true;
         }
-        if (count($tmpScope) == 0) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
