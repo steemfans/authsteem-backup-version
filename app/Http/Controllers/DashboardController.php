@@ -10,6 +10,9 @@ class DashboardController extends Controller
 {
     public function index(Request $request) {
         $app = session('app');
+        if (!$app) {
+            return redirect()->route('home_index');
+        }
         return response()->view(
             'dashboard/index',
             $app,
@@ -20,8 +23,13 @@ class DashboardController extends Controller
     public function indexSave(Request $request) {
         $data = $request->input();
         $app = session('app');
+        if (!$app) {
+            return redirect()->route('home_index');
+        }
         unset($data['_token']);
         $app->fill($data);
+        $app->save();
+        session(['app' => $app]);
         return redirect()->route('dashboard_index')->with('status1', '更新成功');
     }
 
