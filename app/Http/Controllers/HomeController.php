@@ -25,10 +25,7 @@ class HomeController extends Controller
     }
 
     public function docs(Request $request) {
-        return response()->view(
-            'home/docs',
-            []
-        );
+        return redirect()->away('https://github.com/ety001/authsteem/wiki');
     }
 
     public function redirect(Request $request) {
