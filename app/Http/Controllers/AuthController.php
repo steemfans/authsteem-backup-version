@@ -123,7 +123,6 @@ class AuthController extends Controller
                     } else {
                         $cbUri = $app->cb_uri;
                     }
-                    $appUsername = $app->username;
                     $redirectData = [
                         'data' => [
                             'username' => $data['username'],
@@ -180,7 +179,6 @@ class AuthController extends Controller
                     } else {
                         $cbUri = $app->cb_uri;
                     }
-                    $appUsername = $app->username;
                     $redirectData = [
                         'data' => [
                             'username' => $data['username'],
@@ -237,10 +235,27 @@ class AuthController extends Controller
                         )->with('status0', "用户 {$data['username']} 还未对应用平台 {$data['app_id']} 授权。请先授权");
                     }
                     $user->delete();
-                    return response()->view(
-                        'success',
-                        ['success' => ['成功解绑']]
-                    );
+                    // redirect to callback
+                    $secret = $app->secret;
+                    if ($test) {
+                        $cbUri = $app->test_cb_uri;
+                    } else {
+                        $cbUri = $app->cb_uri;
+                    }
+                    $redirectData = [
+                        'data' => [
+                            'username' => $data['username'],
+                            'token' => md5(time().uniqid()),
+                            'sign' => md5($data['username'].$token.$secret),
+                            'result' => json_encode($result['msg']),
+                        ],
+                        'cbUri' => $cbUri,
+                    ];
+                    return redirect()->route('home_redirect')->with('data', $redirectData);
+                    // return response()->view(
+                    //     'success',
+                    //     ['success' => ['成功解绑']]
+                    // );
                 }
                 break;
             default:
