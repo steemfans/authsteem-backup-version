@@ -21,7 +21,7 @@
         <div class="container-fluid" style="orverflow-x: hidden;">
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4" style="margin-top: 10px;">
-                    @if ($_GET['test'])
+                    @if (isset($_GET['test']))
                         <div class="alert alert-warning">
                             正在测试环境中
                         </div>

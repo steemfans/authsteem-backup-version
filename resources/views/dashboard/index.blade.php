@@ -21,29 +21,34 @@
                 </div>
                 <div class="form-group">
                     <label for="app_name">应用名 (用于显示在授权页面)</label>
-                    <input type="text" class="form-control" id="app_name" name="app_name" value="{{ $app_name }}">
+                    <input type="text" class="form-control" id="app_name" name="app_name" value="{{ isset($app_name) ? $app_name : null }}">
                 </div>
                 <div class="form-group">
                     <label for="app_icon">应用图标地址 (用于显示在授权页面, 图片URL)</label>
-                    <input type="text" class="form-control" id="app_icon" name="app_icon" value="{{ $app_icon }}">
+                    <input type="text" class="form-control" id="app_icon" name="app_icon" value="{{ isset($app_icon) ? $app_icon : null }}">
                 </div>
                 <div class="form-group">
                     <label for="app_desc">应用简介</label>
-                    <textarea class="form-control" id="app_desc" name="app_desc">{{ $app_desc }}</textarea>
+                    <textarea class="form-control" id="app_desc" name="app_desc">{{ isset($app_desc) ? $app_desc : null }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="app_site">网站地址</label>
-                    <input type="text" class="form-control" id="app_site" name="app_site" value="{{ $app_site }}">
+                    <input type="text" class="form-control" id="app_site" name="app_site" value="{{ isset($app_site) ? $app_site : null }}">
                 </div>
                 <div class="form-group">
                     <label for="cb_uri">回调地址</label>
-                    <textarea class="form-control" id="cb_uri" name="cb_uri">{{ $cb_uri }}</textarea>
+                    <textarea class="form-control" id="cb_uri" name="cb_uri">{{ isset($cb_uri) ? $cb_uri : null }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="test_cb_uri">回调地址 (测试用)</label>
-                    <textarea class="form-control" id="test_cb_uri" name="test_cb_uri">{{ $test_cb_uri }}</textarea>
+                    <textarea class="form-control" id="test_cb_uri" name="test_cb_uri">{{ isset($test_cb_uri) ? $test_cb_uri : null }}</textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">更新</button>
+                <button type="submit" class="btn btn-primary">更新</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (env('APP_ENV') == 'local')
+                <a class="btn btn-danger pull-right" href="{{ route('auth', ['app_id' => 'authsteem', 'scope' => 'remove_posting', 'test' => 1]) }}">删除应用</a>
+                @else
+                <a class="btn btn-danger pull-right" href="{{ route('auth', ['app_id' => 'authsteem', 'scope' => 'remove_posting']) }}">删除应用</a>
+                @endif
             </form>
         </div>
         <div class="col-xs-6">&nbsp;</div>

@@ -256,10 +256,11 @@ class AuthController extends Controller
                     } else {
                         $cbUri = $app->cb_uri;
                     }
+                    $token = md5(time().uniqid());
                     $redirectData = [
                         'data' => [
                             'username' => $data['username'],
-                            'token' => md5(time().uniqid()),
+                            'token' => $token,
                             'sign' => md5($data['username'].$token.$secret),
                             'result' => json_encode($result['msg']),
                             'scope' => $data['scope'],
