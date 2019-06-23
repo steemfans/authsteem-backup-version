@@ -8,7 +8,6 @@ class DashboardController extends Controller
 {
     public function index(Request $request) {
         $app = session('app');
-        var_dump($app);die();
         return response()->view(
             'dashboard/index',
             $app,
