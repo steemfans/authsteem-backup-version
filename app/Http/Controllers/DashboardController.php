@@ -7,17 +7,11 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function index(Request $request) {
+        $app = session('app');
+        var_dump($app);die();
         return response()->view(
             'dashboard/index',
-            [],
-            200
-        );
-    }
-
-    public function create(Request $request) {
-        return response()->view(
-            'dashboard/app/create',
-            [],
+            $app,
             200
         );
     }

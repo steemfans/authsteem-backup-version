@@ -21,7 +21,4 @@ Route::post('/callback', 'HomeController@callback')->name('callback');
 
 Route::prefix('/dashboard')->group(function(){
     Route::get('/index', 'DashboardController@index')->name('dashboard_index');
-    Route::get('/app/create', 'DashboardController@create')->name('dashboard_app_create');
-    Route::get('/index', 'DashboardController@index')->name('dashboard_index');
-    Route::get('/index', 'DashboardController@index')->name('dashboard_index');
 });
