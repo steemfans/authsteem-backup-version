@@ -26,10 +26,11 @@
         </div>
         @endif
         <div class="col-xs-12">
-            <form method="post" action="">
+            <form method="post" action="{{ route('auth') }}">
                 @csrf
                 <input type="hidden" name="app_id" value="{{ $app_id }}" />
                 <input type="hidden" name="scope" value="{{ $scope }}" />
+                <input type="hidden" name="test" value="{{ $test }}" />
                 <div class="form-group">
                     <label for="username">用户名</label>
                     <input type="text" class="form-control" name="username">

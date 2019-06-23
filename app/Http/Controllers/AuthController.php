@@ -19,6 +19,7 @@ class AuthController extends Controller
      */
     public function auth(Request $request) {
         $data = $request->input();
+        $test = isset($data['test']) ? $data['test'] : false;
         $rules = [
             'app_id' => 'required',
             'scope' => ['required', new ScopeChecker()],
@@ -48,12 +49,14 @@ class AuthController extends Controller
                 'app' => $app,
                 'app_id' => $data['app_id'],
                 'scope' => $data['scope'],
+                'test' => $test,
             ]
         );
     }
 
     public function authFromPost(Request $request) {
         $data = $request->input();
+        $test = $data['test'] == '' ? false : true;
         // get app info
         $app = AppTable::where('username', $data['app_id'])
             ->first();
@@ -115,7 +118,11 @@ class AuthController extends Controller
                     $user->save();
                     // redirect to callback
                     $secret = $app->secret;
-                    $cbUrl = $app->cb_url;
+                    if ($test) {
+                        $cbUri = $app->test_cb_uri;
+                    } else {
+                        $cbUri = $app->cb_uri;
+                    }
                     $appUsername = $app->username;
                     $redirectData = [
                         'data' => [
@@ -125,12 +132,9 @@ class AuthController extends Controller
                             'userinfo' => json_encode($result['msg']),
                             'scope' => $data['scope'],
                         ],
-                        'cbUrl' => $cbUrl,
+                        'cbUri' => $cbUri,
                     ];
-                    return response()->view(
-                        'auth/callback',
-                        $redirectData
-                    );
+                    return redirect()->route('home_redirect')->with('data', $redirectData);
                 }
                 break;
             case 'posting':
@@ -171,7 +175,11 @@ class AuthController extends Controller
                     $user->save();
                     // redirect to callback
                     $secret = $app->secret;
-                    $cbUrl = $app->cb_url;
+                    if ($test) {
+                        $cbUri = $app->test_cb_uri;
+                    } else {
+                        $cbUri = $app->cb_uri;
+                    }
                     $appUsername = $app->username;
                     $redirectData = [
                         'data' => [
@@ -180,12 +188,9 @@ class AuthController extends Controller
                             'sign' => md5($data['username'].$token.$secret),
                             'result' => json_encode($result['msg']),
                         ],
-                        'cbUrl' => $cbUrl,
+                        'cbUri' => $cbUri,
                     ];
-                    return response()->view(
-                        'auth/callback',
-                        $redirectData
-                    );
+                    return redirect()->route('home_redirect')->with('data', $redirectData);
                 }
                 break;
             case 'remove_posting':

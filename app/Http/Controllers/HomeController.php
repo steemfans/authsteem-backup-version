@@ -19,4 +19,20 @@ class HomeController extends Controller
             200
         );
     }
+
+    public function redirect(Request $request) {
+        $data = session('data');
+        if (!$data) {
+            return redirect()->route('home_index');
+        }
+        return response()->view(
+            'home/redirect',
+            $data
+        );
+    }
+
+    public function callback(Request $request) {
+        $data = $request->input();
+        var_dump($data);die();
+    }
 }
