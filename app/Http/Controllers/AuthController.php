@@ -123,6 +123,7 @@ class AuthController extends Controller
                             'token' => $token,
                             'sign' => md5($data['username'].$token.$secret),
                             'userinfo' => json_encode($result['msg']),
+                            'scope' => $data['scope'],
                         ],
                         'cbUrl' => $cbUrl,
                     ];
