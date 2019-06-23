@@ -64,7 +64,7 @@ class HomeController extends Controller
                         ['errors' => ['app_not_register']]
                     );
                 }
-                session('app', $app);
+                session(['app'=> $app]);
                 return redirect()->route('dashboard_index');
                 break;
             case 'posting':
@@ -75,13 +75,13 @@ class HomeController extends Controller
                     $app->secret = md5(uniqid().env('AUTHSTEEM_APP_TOKEN'));
                     $app->save();
                 }
-                session('app', $app);
+                session(['app'=> $app]);
                 return redirect()->route('dashboard_index');
                 break;
             case 'remove_posting':
                 $app = AppTable::where('username', $username)->first();
                 $app->delete();
-                session('app', null);
+                session(['app'=> null]);
                 return response()->view(
                     'success',
                     ['success' => ['已成功解绑']]
